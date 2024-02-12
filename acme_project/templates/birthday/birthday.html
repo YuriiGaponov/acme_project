@@ -8,7 +8,9 @@
       Калькулятор ожидания дня рождения
     </div>
     <div class='card-body'>
-      <form>
+      <form method='post'>
+        <!-- Добавьте тег csrf_token. Без него POST-запрос будет отклонён. -->
+        {% csrf_token %}
         <!-- Выводим поля формы с помощью специального тега. -->
         {% bootstrap_form form %}
         <!-- Добавляем кнопку отправки данных. -->
@@ -16,8 +18,12 @@
       </form>
     </div>
   </div>
-  {% with data=request.GET %}
+  <!-- Замените метод запроса на POST. -->
+  <!-- Подтверждение ввода данных в БД -->
+  {% with data=form.instance %}
     {% if form.is_valid %}
+      ID новой записи в БД: {{ data.id }}
+      <hr>
       <h2>Привет, {{ data.first_name }} {{ data.second_name }}!</h2>
       {% if birthday_countdown == 0 %}
         С днём рождения!
