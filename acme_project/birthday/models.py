@@ -19,6 +19,11 @@ class Birthday(models.Model):
         'Дата рождения',
         validators=(real_age,)
     )
+    image = models.ImageField(
+        'Фото',
+        blank=True,
+        upload_to='birthdays_images'
+    )
 
     class Meta:
         # проверка на уникальность записи
