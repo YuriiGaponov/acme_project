@@ -2,7 +2,13 @@
 from django.core.paginator import Paginator
 # Дополнительно импортируйте шорткат для редиректа.
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import (
+    ListView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+    DetailView
+    )
 from django.urls import reverse_lazy
 
 from .forms import BirthdayForm
@@ -27,12 +33,12 @@ class BirthdayFormMixin:
 
 
 # Добавляем миксин первым по списку родительских классов.
-class BirthdayCreateView(BirthdayMixin, CreateView):
+class BirthdayCreateView(BirthdayMixin, BirthdayFormMixin, CreateView):
     # Не нужно описывать атрибуты: все они унаследованы от BirthdayMixin.
     pass
 
 
-class BirthdayUpdateView(BirthdayMixin, UpdateView):
+class BirthdayUpdateView(BirthdayMixin, BirthdayFormMixin, UpdateView):
     # И здесь все атрибуты наследуются от BirthdayMixin.
     pass
 
@@ -145,3 +151,17 @@ class BirthdayDeleteView(BirthdayMixin, DeleteView):
 #         return redirect('birthday:list')
 #     # Если был получен GET-запрос — отображаем форму.
 #     return render(request, 'birthday/birthday.html', context)
+
+class BirthdayDetailView(DetailView):
+    model = Birthday
+
+    def get_context_data(self, **kwargs):
+        # Получаем словарь контекста:
+        context = super().get_context_data(**kwargs)
+        # Добавляем в словарь новый ключ:
+        context['birthday_countdown'] = calculate_birthday_countdown(
+            # Дату рождения берём из объекта в словаре context:
+            self.object.birthday
+        )
+        # Возвращаем словарь контекста.
+        return context
