@@ -21,10 +21,12 @@
       </div>
         <!-- Ссылку тоже обернём в div; адрес ссылки
         указываем через namespace:name -->
-      <div class="col-10">
-        <a href="{% url 'birthday:edit' birthday.id %}">Изменить запись</a>
-        <a href="{% url 'birthday:delete' birthday.id %}">Удалить запись</a>
-      </div>
+      {% if birthday.author == user %}
+        <div class="col-10">
+          <a href="{% url 'birthday:edit' birthday.id %}">Изменить запись</a>
+          <a href="{% url 'birthday:delete' birthday.id %}">Удалить запись</a>
+        </div>
+      {% endif %}
       {% if not forloop.last %}
         <!-- Класс mt-3 устанавливает отступ сверху (margin-top) в 30 px -->
         <hr class='mt-3'>
